@@ -9,7 +9,7 @@ class AddTaskForm extends Component {
                         <h3 className="panel-title">Add Task <i className="fa fa-times-circle-o right" aria-hidden="true"></i></h3>
                     </div>
                     <div className="panel-body">
-                        <form action="" method="POST" role="form">
+                        <form action="" method="POST">
                             <div className="form-group">
                                 <label >Name : </label>
                                 <input type="text" className="form-control" id="" placeholder="Input field" />
