@@ -35,27 +35,14 @@ class App extends Component {
         })
     }
 
-    onGenerateData = () => {
-        var tasks = [
-            {
-                id: this.generateID(),
-                name : 'Learn',
-                status: true
-            },
-            {
-                id: this.generateID(),
-                name : 'Game',
-                status: false
-            },
-            {
-                id: this.generateID(),
-                name : 'PingPong',
-                status: true
-            },
-        ];
-        // console.log('before : '+ typeof(tasks[0].status));
+    onSubmit = (data) => {
+        var tasks = this.state.tasks;
+        data.id = this.generateID();
+        tasks.push(data);
+        this.setState({
+            tasks : tasks
+        })
         localStorage.setItem('tasks', JSON.stringify(tasks));
-        // console.log('middle : '+ typeof(JSON.parse(localStorage.getItem('tasks'))[0].status));
     }
 
     s4() {
@@ -68,18 +55,16 @@ class App extends Component {
 
   render() {
     var {tasks, isDisplayForm} = this.state;
-    var elmTaskFrom = isDisplayForm ? <AddTaskForm onCloseForm = {this.onCloseForm}/> : '';
+    var elmTaskFrom = isDisplayForm 
+        ? <AddTaskForm onSubmit={this.onSubmit} onCloseForm = {this.onCloseForm}/>
+        : '';
     return (
       <div className="container">
             <div className="text-center">
                 Task Management
                 <hr></hr>
             </div>
-
             {elmTaskFrom}
-
-            
-
             <div className={isDisplayForm ? "col-xs-8 col-sm-8 col-md-8 col-lg-8" : "col-xs-12 col-sm-12 col-md-12 col-lg-12"}>
                 <div className="row">
                     <button 
@@ -90,16 +75,7 @@ class App extends Component {
                         <i className="fa fa-plus" aria-hidden="true"></i>
                         Add Task
                     </button>
-                    <button 
-                        type="button" 
-                        className="btn btn-danger ml-15"
-                        onClick={this.onGenerateData}
-                    >
-                    <i className="fa fa-plus" aria-hidden="true"></i>
-                    Generate Data
-                    </button>
                 </div>
-                
                 <TaskControl />
                 <TaskList tasks = { tasks }/>
             </div>  
