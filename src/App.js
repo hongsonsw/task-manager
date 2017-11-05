@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import AddTaskForm from './components/AddTaskForm';
-import AddTask from './components/AddTask';
 import TaskControl from './components/TaskControl';
 import TaskList from './components/TaskList';
 
@@ -10,7 +9,8 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tasks : [] //id :unique, name, status
+            tasks : [], //id :unique, name, status
+            isDisplayForm : false
         }
     }
 
@@ -21,6 +21,18 @@ class App extends Component {
                 tasks: tasks
             });
         }
+    }
+
+    onToggleForm = () => {
+        this.setState({
+            isDisplayForm : !this.state.isDisplayForm
+        })
+    }
+
+    onCloseForm = () => {
+        this.setState({
+            isDisplayForm : false
+        })
     }
 
     onGenerateData = () => {
@@ -40,9 +52,10 @@ class App extends Component {
                 name : 'PingPong',
                 status: true
             },
-        ]
-        
+        ];
+        // console.log('before : '+ typeof(tasks[0].status));
         localStorage.setItem('tasks', JSON.stringify(tasks));
+        // console.log('middle : '+ typeof(JSON.parse(localStorage.getItem('tasks'))[0].status));
     }
 
     s4() {
@@ -54,7 +67,8 @@ class App extends Component {
     }
 
   render() {
-    var {tasks} = this.state;
+    var {tasks, isDisplayForm} = this.state;
+    var elmTaskFrom = isDisplayForm ? <AddTaskForm onCloseForm = {this.onCloseForm}/> : '';
     return (
       <div className="container">
             <div className="text-center">
@@ -62,19 +76,30 @@ class App extends Component {
                 <hr></hr>
             </div>
 
-            <AddTaskForm />
+            {elmTaskFrom}
 
-            <button 
-                type="button" 
-                className="btn btn-danger mt-15"
-                onClick={this.onGenerateData}
-            >
-                <i className="fa fa-plus" aria-hidden="true"></i>
-                Generate Data
-            </button>
+            
 
-            <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                <AddTask />
+            <div className={isDisplayForm ? "col-xs-8 col-sm-8 col-md-8 col-lg-8" : "col-xs-12 col-sm-12 col-md-12 col-lg-12"}>
+                <div className="row">
+                    <button 
+                        type="button" 
+                        className="btn btn-success"
+                        onClick = {this.onToggleForm}
+                    >
+                        <i className="fa fa-plus" aria-hidden="true"></i>
+                        Add Task
+                    </button>
+                    <button 
+                        type="button" 
+                        className="btn btn-danger ml-15"
+                        onClick={this.onGenerateData}
+                    >
+                    <i className="fa fa-plus" aria-hidden="true"></i>
+                    Generate Data
+                    </button>
+                </div>
+                
                 <TaskControl />
                 <TaskList tasks = { tasks }/>
             </div>  
