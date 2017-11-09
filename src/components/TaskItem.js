@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 
 class TaskItem extends Component {
+
+    onUpdateStatus = () => {
+        this.props.onUpdateStatus(this.props.task.id);
+    }
+
   render() {
     var {task, index} = this.props;
+
     // console.log('type of Task :' + typeof(task));
     // console.log('taskid : ' + typeof(task.status));
     return (
@@ -11,6 +17,7 @@ class TaskItem extends Component {
             <td>{task.name}</td>
             <td className="center">
                 <span
+                    onClick = {this.onUpdateStatus}
                     className={task.status ? 'label label-success' : 'label label-danger'}
                 >
                     {task.status ? 'Active' : 'Deactive'}
