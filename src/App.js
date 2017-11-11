@@ -65,6 +65,19 @@ class App extends Component {
         }
     }
 
+    onRemoveTask = (id) => {
+        var { tasks } = this.state;
+        var index = this.findIndex(id);
+        if(index !== -1) {
+            tasks.splice(index, 1);
+            this.onCloseForm();           
+            this.setState({
+                tasks : tasks
+            });
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+    }
+
     findIndex = (id) => {
         var {tasks} = this.state;
         var result = -1;
@@ -104,6 +117,7 @@ class App extends Component {
                 <TaskList 
                     tasks = { tasks }
                     onUpdateStatus = {this.onUpdateStatus}
+                    onRemoveTask = {this.onRemoveTask}
                 />
             </div>  
       </div>
