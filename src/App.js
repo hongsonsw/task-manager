@@ -10,7 +10,8 @@ class App extends Component {
         super(props);
         this.state = {
             tasks : [], //id :unique, name, status
-            isDisplayForm : false
+            isDisplayForm : false,
+            taskEditing : null
         }
     }
 
@@ -24,9 +25,17 @@ class App extends Component {
     }
 
     onToggleForm = () => {
-        this.setState({
-            isDisplayForm : !this.state.isDisplayForm
-        })
+        if (this.state.taskEditing) {
+            if(this.state.isDisplayForm) {
+                this.setState({
+                    taskEditing : null
+                })
+            }
+        } else {
+            this.setState({
+                isDisplayForm : !this.state.isDisplayForm,
+            })
+        }
     }
 
     onCloseForm = () => {
@@ -35,12 +44,26 @@ class App extends Component {
         })
     }
 
+    onShowForm = () => {
+        this.setState({
+            isDisplayForm : true
+        });
+    }
+
     onSubmit = (data) => {
         var tasks = this.state.tasks;
-        data.id = this.generateID();
-        tasks.push(data);
+        if (data.id) {
+            console.log('edit');
+            var index = this.findIndex(data.id);
+            tasks[index] = data;
+        } else {
+            console.log('add new');
+            data.id = this.generateID();
+            tasks.push(data);
+        }
         this.setState({
-            tasks : tasks
+            tasks : tasks,
+            taskEditing : null
         })
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
@@ -75,7 +98,19 @@ class App extends Component {
                 tasks : tasks
             });
             localStorage.setItem('tasks', JSON.stringify(tasks));
+
         }
+    }
+
+    onUpdate = (id) => {
+        // console.log(id);
+        var { tasks } = this.state;
+        var index = this.findIndex(id);
+        var taskEditing = tasks[index];
+        this.setState({
+            taskEditing : taskEditing
+        });
+        this.onShowForm();
     }
 
     findIndex = (id) => {
@@ -91,9 +126,13 @@ class App extends Component {
 
 
   render() {
-    var {tasks, isDisplayForm} = this.state;
+    var {tasks, isDisplayForm, taskEditing} = this.state;
     var elmTaskFrom = isDisplayForm 
-        ? <AddTaskForm onSubmit={this.onSubmit} onCloseForm = {this.onCloseForm}/>
+        ? <AddTaskForm 
+            onSubmit={this.onSubmit} 
+            onCloseForm = {this.onCloseForm}
+            task = {taskEditing}
+        />
         : '';
     return (
       <div className="container">
@@ -118,6 +157,8 @@ class App extends Component {
                     tasks = { tasks }
                     onUpdateStatus = {this.onUpdateStatus}
                     onRemoveTask = {this.onRemoveTask}
+                    onUpdate = {this.onUpdate}
+                    task = {taskEditing}
                 />
             </div>  
       </div>

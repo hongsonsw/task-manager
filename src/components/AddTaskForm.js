@@ -5,10 +5,34 @@ class AddTaskForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            id : '',
             name : '',
             status: false
         }
     }
+
+    componentWillMount() {
+        if (this.props.task) {
+            this.setState({
+               id : this.props.task.id,
+               name : this.props.task.name,
+               status : this.props.task.status 
+            });
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.task) {
+            this.setState({
+               id : nextProps.task.id,
+               name : nextProps.task.name,
+               status : nextProps.task.status 
+            });
+        }else {
+            this.onClear();
+        }
+    }
+
 
     onCloseForm = () => {
         this.props.onCloseForm();
@@ -35,6 +59,7 @@ class AddTaskForm extends Component {
 
     onClear = () => {
         this.setState({
+            id : '',
             name : '',
             status : false
         })
@@ -45,7 +70,7 @@ class AddTaskForm extends Component {
             <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                 <div className="panel panel-warning">
                     <div className="panel-heading">
-                        <h3 className="panel-title">Add Task 
+                        <h3 className="panel-title">{this.state.id ? "Edit Task" : "Add Task "}
                             <i 
                                 className="fa fa-times-circle-o right" 
                                 aria-hidden="true"

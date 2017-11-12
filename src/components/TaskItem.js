@@ -10,6 +10,10 @@ class TaskItem extends Component {
         this.props.onRemoveTask(this.props.task.id);
     }
 
+    onUpdate = () => {
+        this.props.onUpdate(this.props.task.id);
+    }
+
   render() {
     var {task, index} = this.props;
 
@@ -28,8 +32,20 @@ class TaskItem extends Component {
                 </span>
             </td>
             <td className="center">
-                <button type="button" className="btn btn-warning mr-5"><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button>
-                <button type="button" onClick={this.onRemoveTask} className="btn btn-danger"><i className="fa fa-trash" aria-hidden="true"></i> Delete</button>
+                <button 
+                    type="button" 
+                    className="btn btn-warning mr-5"
+                    onClick={this.onUpdate}
+                >
+                    <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
+                </button>
+                <button 
+                    type="button" 
+                    onClick={this.onRemoveTask} 
+                    className="btn btn-danger"
+                >
+                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
+                </button>
             </td>
         </tr>
     );
