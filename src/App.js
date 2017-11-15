@@ -3,6 +3,7 @@ import './App.css';
 import AddTaskForm from './components/AddTaskForm';
 import TaskControl from './components/TaskControl';
 import TaskList from './components/TaskList';
+import _ from 'lodash';
 
 class App extends Component {
 
@@ -16,7 +17,9 @@ class App extends Component {
             	name : '',
             	status : -1
             },
-            keyword : ''
+            keyword : '',
+            sortBy : 'name',
+            sortValue : 1
         }
     }
 
@@ -110,7 +113,8 @@ class App extends Component {
     onUpdate = (id) => {
         // console.log(id);
         var { tasks } = this.state;
-        var index = this.findIndex(id);
+        // var index = this.findIndex(id);
+        var index = _.findIndex(tasks, id);
         var taskEditing = tasks[index];
         this.setState({
             taskEditing : taskEditing
@@ -147,11 +151,30 @@ class App extends Component {
     	});
     }
 
+    onSort = (sortBy, sortValue) => {
+    	this.setState({
+    		sortBy : sortBy,
+    		sortValue : sortValue
+    	});
+    }
+
   render() {
-    var {tasks, isDisplayForm, taskEditing, filter, keyword} = this.state;
+    var {
+    	tasks, 
+    	isDisplayForm, 
+    	taskEditing, 
+    	filter, 
+    	keyword,
+    	sortBy,
+    	sortValue
+    } = this.state;
 	if(filter.name) {
-		tasks = tasks.filter((task) => {
-			return task.name.toLowerCase().indexOf(filter.name) !== -1;
+		// tasks = tasks.filter((task) => {
+		// 	return task.name.toLowerCase().indexOf(filter.name) !== -1;
+		// });
+		
+		tasks = _.filter(tasks, (task) => {
+			return _.includes(task.name.toLowerCase(), filter.name.toLowerCase());
 		});
 	}
 
@@ -169,6 +192,20 @@ class App extends Component {
 		});
 	}
 
+	if (sortBy === 'name') {
+		tasks.sort((a,b) => {
+			if (a.name > b.name) return sortValue;
+			else if (a.name < b.name) return -sortValue;
+			else return 0;
+		});
+	} else {
+		tasks.sort((a,b) => {
+			if (a.status < b.status) return sortValue;
+			else if (a.status > b.status) return -sortValue;
+			else return 0;
+		});
+	}
+
     var elmTaskFrom = isDisplayForm 
         ? <AddTaskForm 
             onSubmit={this.onSubmit} 
@@ -176,6 +213,8 @@ class App extends Component {
             task = {taskEditing}
         />
         : '';
+
+
     return (
       <div className="container">
             <div className="text-center">
@@ -194,7 +233,12 @@ class App extends Component {
                         Add Task
                     </button>
                 </div>
-                <TaskControl onSearch = {this.onSearch}/>
+                <TaskControl 
+                	onSearch = {this.onSearch}
+                	onSort = {this.onSort}
+                	sortBy = {sortBy}
+                	sortValue = {sortValue}
+                />
                 <TaskList 
                     tasks = { tasks }
                     onUpdateStatus = {this.onUpdateStatus}
